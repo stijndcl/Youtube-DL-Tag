@@ -6,6 +6,7 @@ import urllib.request
 from PIL import Image
 import requests
 import json
+import lastfm
 import eyed3
 import glob
 import youtube_dl
@@ -13,6 +14,7 @@ import progressBar
 
 
 artist = None
+info = None
 
 
 class Logger(object):
@@ -39,6 +41,7 @@ def hook(d):
 
 
 def download(link: str):
+    global info
     ydl_opts = {
         "writeinfojson": True,
         "format": "251",
@@ -52,13 +55,14 @@ def download(link: str):
     }
     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
         ydl.download([link])
+    info = glob.glob("./*.info.json")[0]
+    with open(info, "r") as fp:
+        info = json.load(fp)
 
 
 # Removes the video id out of the filename
 def renameFile():
-    info = glob.glob("./*.info.json")[0]
-    with open(info, "r") as fp:
-        info = json.load(fp)
+    global info
 
     audioFile = glob.glob("./*{}.mp3".format(info["id"]))[0]
     newName = audioFile.replace("-{}".format(info["id"]), "")
@@ -67,9 +71,7 @@ def renameFile():
 
 # Saves the album cover
 def saveAlbumArt():
-    info = glob.glob("./*.info.json")[0]
-    with open(info, "r") as fp:
-        info = json.load(fp)
+    global info
 
     thumbnails = sorted(info["thumbnails"], key=lambda x: x["width"], reverse=True)
 
@@ -82,12 +84,18 @@ def saveAlbumArt():
     # Cut the cover out of it
     im = Image.open("thumbnail.jpeg")
     w, h = im.size
-
-    # Space to cut from the left
-    cutOff = (w - h) / 2
     im.crop(((w - h)//2, 0, (w + h)//2, h)).save("thumbnail.jpeg")
 
 
+def promptArtist():
+    global info
+    global artist
+    if not info["uploader"].endswith(" - Topic"):
+        artist = input("Enter the name of the artist: ")
+
+
 # download(sys.argv[1])
-saveAlbumArt()
+# saveAlbumArt()
+# promptArtist()
 # renameFile()
+lastfm.searchTrack("Nicky Romero")
