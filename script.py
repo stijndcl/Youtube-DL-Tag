@@ -98,4 +98,3 @@ def promptArtist():
 # saveAlbumArt()
 # promptArtist()
 # renameFile()
-lastfm.searchTrack("Nicky Romero")
