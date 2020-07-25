@@ -6,14 +6,12 @@ import urllib.request
 from PIL import Image
 import requests
 import json
-import lastfm
-import eyed3
+import tag
 import glob
 import youtube_dl
 import progressBar
 
 
-artist = None
 info = None
 
 
@@ -36,7 +34,7 @@ def hook(d):
             ),
               end="\r")
     if d['status'] == 'finished':
-        print("\n")
+        print("\n", end="")
         print('Converting to {}...'.format(d["filename"][:-4] + "mp3"))
 
 
@@ -87,14 +85,13 @@ def saveAlbumArt():
     im.crop(((w - h)//2, 0, (w + h)//2, h)).save("thumbnail.jpeg")
 
 
-def promptArtist():
-    global info
-    global artist
-    if not info["uploader"].endswith(" - Topic"):
-        artist = input("Enter the name of the artist: ")
+def parseDescription():
+    with open(glob.glob("*.description"), "r") as fp:
+        description = fp.readline()
+    dic = {}
 
 
-# download(sys.argv[1])
-# saveAlbumArt()
-# promptArtist()
+download(sys.argv[1])
+saveAlbumArt()
+tag.tag(info)
 # renameFile()
