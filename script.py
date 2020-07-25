@@ -4,9 +4,10 @@ import requests
 import json
 import eyed3
 import youtube_dl
+import progressBar
 
 
-class MyLogger(object):
+class Logger(object):
     def debug(self, msg):
         pass
 
@@ -17,11 +18,14 @@ class MyLogger(object):
         print(msg)
 
 
-def my_hook(d):
-    while d['status'] != "finished":
-        print(d["downloaded_bytes"])
+def hook(d):
+    if d["status"] == "downloading":
+        progressBar.progress(int(d["_percent_str"].split(".")[0]))
+        # print("\r Downloaded {}/{} bytes ({}) at {}".format(d["downloaded_bytes"], d["total_bytes"],
+        #       d["_percent_str"].strip(), d["_speed_str"]))
     if d['status'] == 'finished':
-        print('Done downloading {}, now converting to {}...'.format(d["tmpfilename"], d["filename"]))
+        progressBar.endProgress()
+        print('Converting to {}...'.format(d["filename"][:-4] + "mp3"))
 
 
 def download(link: str):
@@ -33,12 +37,12 @@ def download(link: str):
             'preferredcodec': 'mp3',
             'preferredquality': '320',
         }],
-        'logger': MyLogger(),
-        'progress_hooks': [my_hook],
+        'logger': Logger(),
+        'progress_hooks': [hook],
     }
     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+        progressBar.startProgress("Progress")
         ydl.download([link])
 
 
-args = sys.argv
-download(args[1])
+download(sys.argv[1])
