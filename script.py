@@ -2,7 +2,8 @@
 import os
 import sys
 import time
-
+import urllib.request
+from PIL import Image
 import requests
 import json
 import eyed3
@@ -64,5 +65,20 @@ def renameFile():
     os.rename(audioFile, newName)
 
 
+# Saves the album cover
+def saveAlbumArt():
+    info = glob.glob("./*.info.json")[0]
+    with open(info, "r") as fp:
+        info = json.load(fp)
+
+    thumbnails = sorted(info["thumbnails"], key=lambda x: x["width"], reverse=True)
+
+    urllib.request.urlretrieve(thumbnails[0]["url"], "thumbnail.webp")
+    im = Image.open("thumbnail.webp").convert("RGB")
+    im.save("thumbnail.jpeg", "jpeg")
+    os.remove("thumbnail.webp")
+
+
 # download(sys.argv[1])
-renameFile()
+saveAlbumArt()
+# renameFile()
