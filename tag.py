@@ -17,7 +17,7 @@ def tag(info):
 
     albumArtist = promptResponse(artist, input("Album Artist ({}): ".format(artist)))
 
-    track = "1" if "extended" in info["title"].lower() else "2"
+    track = "1" if "extended" not in info["title"].lower() else "2"
     track = promptResponse(track, input("Track ({}): ".format(track)))
     totalTracks = promptResponse("2", input("Total Tracks (2): "))
 
