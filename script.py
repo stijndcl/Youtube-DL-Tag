@@ -85,13 +85,6 @@ def saveAlbumArt():
     im.crop(((w - h)//2, 0, (w + h)//2, h)).save("thumbnail.jpeg")
 
 
-def parseDescription():
-    with open(glob.glob("*.description"), "r") as fp:
-        description = fp.readline()
-    dic = {}
-
-
 download(sys.argv[1])
 saveAlbumArt()
 tag.tag(info)
-# renameFile()
