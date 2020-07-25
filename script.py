@@ -48,4 +48,4 @@ def download(link: str):
         ydl.download([link])
 
 
-# download(sys.argv[1])
+download(sys.argv[1])
