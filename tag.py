@@ -24,6 +24,7 @@ def tag(info):
     year = promptResponse(info["upload_date"][:4], input("Year ({})".format(info["upload_date"][:4])))
     label = input("Label: ")
 
+    print("Adding tags...")
     # Tag
     file = eyed3.load(fileName)
     file.tag.title = title
@@ -37,9 +38,13 @@ def tag(info):
     file.tag.images.set(3, open("thumbnail.jpeg", "rb").read(), "image/jpeg")
     file.tag.save()
 
+    print("Renaming original file...")
     os.rename(r"{}".format(fileName), r"{} - {}.mp3".format(artist, title))
+
+    print("Removing temporary files...")
     os.remove(glob.glob("./*.info.json")[0])
     os.remove(glob.glob("./thumbnail.jpeg")[0])
+    exit(0)
 
 
 # After asking the user to fill in a field, format their response

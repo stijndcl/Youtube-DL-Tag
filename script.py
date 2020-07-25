@@ -1,10 +1,8 @@
 #!/usr/bin/python3
 import os
 import sys
-import time
 import urllib.request
 from PIL import Image
-import requests
 import json
 import tag
 import glob
