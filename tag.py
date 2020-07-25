@@ -14,7 +14,7 @@ def tag(info):
 
     title = promptResponse(info["title"], input("Title ({}): ".format(info["title"])))
     album = title.replace(" [Extended Mix]", "").replace(" (Extended Mix)", "") + " - Single"
-    album = promptResponse(album, input("Album ({})".format(album)))
+    album = promptResponse(album, input("Album ({}): ".format(album)))
 
     albumArtist = promptResponse(artist, input("Album Artist ({}): ".format(artist)))
 
