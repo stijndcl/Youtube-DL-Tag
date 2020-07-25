@@ -22,7 +22,7 @@ def tag(info):
     track = promptResponse(track, input("Track ({}): ".format(track)))
     totalTracks = promptResponse("2", input("Total Tracks (2): "))
 
-    year = promptResponse(info["upload_date"][:4], input("Year ({})".format(info["upload_date"][:4])))
+    year = promptResponse(info["upload_date"][:4], input("Year ({}): ".format(info["upload_date"][:4])))
     label = input("Label: ")
 
     print("\nAdding tags...")
