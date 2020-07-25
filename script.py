@@ -73,10 +73,19 @@ def saveAlbumArt():
 
     thumbnails = sorted(info["thumbnails"], key=lambda x: x["width"], reverse=True)
 
+    # Download & save the file
     urllib.request.urlretrieve(thumbnails[0]["url"], "thumbnail.webp")
     im = Image.open("thumbnail.webp").convert("RGB")
     im.save("thumbnail.jpeg", "jpeg")
     os.remove("thumbnail.webp")
+
+    # Cut the cover out of it
+    im = Image.open("thumbnail.jpeg")
+    w, h = im.size
+
+    # Space to cut from the left
+    cutOff = (w - h) / 2
+    im.crop(((w - h)//2, 0, (w + h)//2, h)).save("thumbnail.jpeg")
 
 
 # download(sys.argv[1])
