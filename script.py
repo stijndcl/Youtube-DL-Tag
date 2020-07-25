@@ -1,12 +1,17 @@
 #!/usr/bin/python3
+import os
 import sys
 import time
 
 import requests
 import json
 import eyed3
+import glob
 import youtube_dl
 import progressBar
+
+
+artist = None
 
 
 class Logger(object):
@@ -22,13 +27,13 @@ class Logger(object):
 
 def hook(d):
     if d["status"] == "downloading":
-        # progressBar.progress(int(d["_percent_str"].split(".")[0]))
         print("Downloaded {:,}/{:,} bytes ({}) at {} - ETA: {} seconds {}".format(
             int(d["downloaded_bytes"]), int(d["total_bytes"]), d["_percent_str"].strip(),
             d["_speed_str"].strip(), d["eta"], progressBar.createProgressBar(int(d["_percent_str"].split(".")[0]))
             ),
               end="\r")
     if d['status'] == 'finished':
+        print("\n")
         print('Converting to {}...'.format(d["filename"][:-4] + "mp3"))
 
 
@@ -48,4 +53,16 @@ def download(link: str):
         ydl.download([link])
 
 
-download(sys.argv[1])
+# Removes the video id out of the filename
+def renameFile():
+    info = glob.glob("./*.info.json")[0]
+    with open(info, "r") as fp:
+        info = json.load(fp)
+
+    audioFile = glob.glob("./*{}.mp3".format(info["id"]))[0]
+    newName = audioFile.replace("-{}".format(info["id"]), "")
+    os.rename(audioFile, newName)
+
+
+# download(sys.argv[1])
+renameFile()
