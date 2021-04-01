@@ -12,6 +12,7 @@ def get(category: str, inp: str):
 
     for alias in separate:
         if not alias.startswith("$"):
+            parsed.append(alias)
             continue
 
         alias = alias[1:]

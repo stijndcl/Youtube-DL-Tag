@@ -49,11 +49,12 @@ def tag(info):
         label = get("labels", input("Label: "))
 
     print("\nAdding tags...")
+
     # Tag
     file = eyed3.load(fileName)
     file.tag.title = title
     file.tag.artist = artist
-    file.tag._album = album
+    file.tag.album = album
     file.tag.album_artist = albumArtist
     file.tag.track = track
     file.tag.track_total = totalTracks

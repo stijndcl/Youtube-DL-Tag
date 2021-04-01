@@ -4,6 +4,9 @@ from parse_aliases import get
 
 
 def _save(cat, key, value):
+    if key.startswith("$"):
+        key = key[1:]
+
     with open("files/aliases.json", "r") as fp:
         aliases = json.load(fp)
 
@@ -17,6 +20,7 @@ def _album():
     album_artist = get("artists", input("Album artist: "))
     album = input("Album: ")
     aliased_name = input("Album (alias): ")
+
     total = input("Total tracks: ")
     year = input("Release year: ")
     label = get("labels", input("Label: "))
