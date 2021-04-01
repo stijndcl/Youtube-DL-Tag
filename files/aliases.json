@@ -1,0 +1,17 @@
+{
+  "artists": {
+    "lp": "Linkin Park"
+  },
+  "albums": {
+    "mtm": {
+      "album": "Minutes to Midnight",
+      "artist": "Linkin Park",
+      "total": "12",
+      "year": "2007",
+      "label": "Warner Records Inc."
+    }
+  },
+  "labels": {
+    "warner": "Warner Records Inc."
+  }
+}

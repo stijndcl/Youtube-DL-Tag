@@ -3,34 +3,57 @@ import os
 
 import eyed3
 
+from alias import get
+
 
 def tag(info):
+    album = None
+    albumArtist = None
+    totalTracks = None
+    year = None
+    label = None
+
     print("\n")
     fileName = glob.glob("./*{}*.mp3".format(info["id"]))[0]
 
     # Ask the user for all the info
     artist = info["uploader"].replace(" - Topic", "")
-    artist = promptResponse(artist, input("Artist ({}): ".format(artist)))
+    artist = get("artists", promptResponse(artist, input("Artist ({}): ".format(artist))))
 
     title = promptResponse(info["title"], input("Title ({}): ".format(info["title"])))
-    album = title.replace(" [Extended Mix]", "").replace(" (Extended Mix)", "") + " - Single"
-    album = promptResponse(album, input("Album ({}): ".format(album)))
 
-    albumArtist = promptResponse(artist, input("Album Artist ({}): ".format(artist)))
+    album = title.replace(" [Extended Mix]", "").replace(" (Extended Mix)", "") + " - Single"
+    album = get("albums", promptResponse(album, input("Album ({}): ".format(album))))
+
+    # If album was an alias, parse all data out
+    if isinstance(album, dict):
+        totalTracks = album["total"]
+        year = album["year"]
+        albumArtist = album["artist"]
+        label = album["label"]
+        album = album["album"]
+
+    if albumArtist is None:
+        albumArtist = get("artists", promptResponse(artist, input("Album Artist ({}): ".format(artist))))
 
     track = "1" if "extended" not in info["title"].lower() else "2"
     track = promptResponse(track, input("Track ({}): ".format(track)))
-    totalTracks = promptResponse("2", input("Total Tracks (2): "))
 
-    year = promptResponse(info["upload_date"][:4], input("Year ({}): ".format(info["upload_date"][:4])))
-    label = input("Label: ")
+    if totalTracks is None:
+        totalTracks = promptResponse("2", input("Total Tracks (2): "))
+
+    if year is None:
+        year = promptResponse(info["upload_date"][:4], input("Year ({}): ".format(info["upload_date"][:4])))
+
+    if label is None:
+        label = get("labels", input("Label: "))
 
     print("\nAdding tags...")
     # Tag
     file = eyed3.load(fileName)
     file.tag.title = title
     file.tag.artist = artist
-    file.tag.album = album
+    file.tag._album = album
     file.tag.album_artist = albumArtist
     file.tag.track = track
     file.tag.track_total = totalTracks
